@@ -1,0 +1,12 @@
+# Ignore Python and environment stuff
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env
+venv/
+
+# Editor settings
+.vscode/
+.idea/

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 What Kinda Website Is This?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .result-content {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .result-content h1, .result-content h2, .result-content h3 {
+            color: #333;
+            margin: 15px 0 10px 0;
+        }
+
+        .result-content h1 {
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+
+        .result-content h2 {
+            font-size: 1.3em;
+            color: #667eea;
+        }
+
+        .result-content h3 {
+            font-size: 1.1em;
+            color: #764ba2;
+        }
+
+        .result-content p {
+            margin: 10px 0;
+        }
+
+        .result-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .result-content li {
+            margin: 5px 0;
+        }
+
+        .result-content strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #d63031;
+            border: 1px solid #fab1a0;
+        }
+
+        .example-urls {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 10px;
+        }
+
+        .example-urls h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .example-url {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-right: 15px;
+        }
+
+        .example-url:hover {
+            color: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 What Kinda Website Is This?</h1>
+        
+        <div class="input-section">
+            <label for="website-url">Enter a website URL:</label>
+            <input 
+                type="url" 
+                id="website-url" 
+                placeholder="https://example.com" 
+                value=""
+            >
+        </div>
+
+        <div class="button-container">
+            <button onclick="analyzeWebsite()" id="analyze-btn">
+                🔍 Analyze Website
+            </button>
+        </div>
+
+        <div class="example-urls">
+            <h4>Try these examples:</h4>
+            <span class="example-url" onclick="fillUrl('https://logan-code-lv.github.io/Portfolio1.9/')">Logan's GitHub Profile</span>
+            <span class="example-url" onclick="fillUrl('https://en.wikipedia.org/wiki/Jack_Eichel')">Who is Jack Eichel?</span>
+            <span class="example-url" onclick="fillUrl('https://www.imdb.com/title/tt0468569/')">Best movie of all time?</span>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing website... 🤖</p>
+        </div>
+
+        <div class="result" id="result">
+            <h3 id="result-title"></h3>
+            <div class="result-content" id="result-content"></div>
+        </div>
+    </div>
+
+    <script>
+        function fillUrl(url) {
+            document.getElementById('website-url').value = url;
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('analyze-btn').disabled = true;
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('analyze-btn').disabled = false;
+        }
+
+        function parseMarkdown(text) {
+            // Convert markdown to HTML
+            let html = text
+                // Headers (do these first)
+                .replace(/### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/# (.*$)/gm, '<h1>$1</h1>')
+                // Bold text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Handle line breaks - convert double newlines to paragraph breaks
+                .replace(/\n\n+/g, '</p><p>')
+                // Single newlines become line breaks
+                .replace(/\n/g, '<br>')
+                // Handle lists
+                .replace(/- (.*?)(<br>|$)/g, '<li>$1</li>')
+                .replace(/(<li>.*?<\/li>(<br>)*)+/g, '<ul>$&</ul>')
+                .replace(/<br>/g, '')
+                
+            // Wrap content in paragraphs if it doesn't start with a block element
+            if (!html.startsWith('<h') && !html.startsWith('<ul')) {
+                html = '<p>' + html + '</p>';
+            }
+            
+            // Clean up empty paragraphs and fix paragraph tags
+            html = html
+                .replace(/<p><\/p>/g, '')
+                .replace(/<p>(<h[1-6]>)/g, '$1')
+                .replace(/(<\/h[1-6]>)<\/p>/g, '$1')
+                .replace(/<p>(<ul>)/g, '$1')
+                .replace(/(<\/ul>)<\/p>/g, '$1');
+                
+            return html;
+        }
+
+        function showResult(title, content, isError = false) {
+            const resultDiv = document.getElementById('result');
+            const titleEl = document.getElementById('result-title');
+            const contentEl = document.getElementById('result-content');
+
+            titleEl.textContent = title;
+            
+            if (isError) {
+                contentEl.innerHTML = content;
+            } else {
+                // Parse markdown for success responses
+                contentEl.innerHTML = parseMarkdown(content);
+            }
+            
+            resultDiv.className = isError ? 'result error' : 'result';
+            resultDiv.style.display = 'block';
+        }
+
+        async function analyzeWebsite() {
+            const url = document.getElementById('website-url').value.trim();
+            
+            if (!url) {
+                alert('Please enter a website URL');
+                return;
+            }
+
+            // Basic URL validation
+            try {
+                new URL(url);
+            } catch (e) {
+                alert('Please enter a valid URL (including http:// or https://)');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                // This will eventually call your main.py backend
+                // For now, we're setting up the structure
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult(
+                        `📊 Analysis of: ${data.title}`,
+                        `<strong>URL:</strong> ${data.url}<br><br>${data.summary}`
+                    );
+                } else {
+                    showResult(
+                        '❌ Error',
+                        `Failed to analyze website: ${data.error}`,
+                        true
+                    );
+                }
+            } catch (error) {
+                showResult(
+                    '❌ Connection Error',
+                    `Could not connect to the backend. Make sure the server is running.<br><br>Error: ${error.message}`,
+                    true
+                );
+            }
+
+            hideLoading();
+        }
+
+        // Allow Enter key to trigger analysis
+        document.getElementById('website-url').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeWebsite();
+            }
+        });
+    </script>
+</body>
+</html> 
